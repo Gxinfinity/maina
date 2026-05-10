@@ -1,0 +1,12 @@
+.env
+venv/
+pycache/
+*.pyc
+*.pyo
+*.wav
+*.raw
+*.ogg
+*.mp3
+*.session
+*.session-journal
+log.txt
