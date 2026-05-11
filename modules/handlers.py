@@ -91,7 +91,7 @@ class TelegramHandlers:
             ok = self.router.tts.set_language(chat_id, args); return await message.reply("🌐 Voice set." if ok else f"Supported: {', '.join(LANGUAGE_VOICES)}")
         if cmd == "intro":
             return await message.reply(
-        """
+                """
 🔥 **RUHI AI SUPREME** 🔥
 
 🤖 Most Advanced Multi-Feature Telegram Assistant
@@ -159,6 +159,10 @@ class TelegramHandlers:
 /search → Search Anything
 /lang → Change Voice Language
 /quiz → Start Quiz
+/quizhub → Quiz Hub
+/subjects → Subjects List
+/pollquiz Physics
+/xoxo → TicTacToe
 /ttt → TicTacToe
 /intro → Bot Introduction
 
@@ -166,40 +170,43 @@ class TelegramHandlers:
 🚀 RUHI AI SUPREME
 Made For Speed • Power • Intelligence
 ━━━━━━━━━━━━━━━━━━
-""",
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        "🧠 AI Chat",
-                        callback_data="intro_ai"
-                    ),
-                    InlineKeyboardButton(
-                        "📚 Quiz",
-                        callback_data="intro_quiz"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        "🎮 Games",
-                        callback_data="intro_games"
-                    ),
-                    InlineKeyboardButton(
-                        "⚙ Features",
-                        callback_data="intro_features"
-                    )
-                ],
-                [
-                    InlineKeyboardButton(
-                        "🔥 Ruhi Supreme",
-                        callback_data="intro_home"
-                    )
-                ]
-            ]
-        )
-    )
-        if cmd == "xoxo": return await message.reply("🎮 TicTacToe coming alive: use callbacks soon 🙂")
+                """,
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                "🧠 AI Chat",
+                                callback_data="intro_ai"
+                            ),
+                            InlineKeyboardButton(
+                                "📚 Quiz",
+                                callback_data="intro_quiz"
+                            )
+                        ],
+                        [
+                            InlineKeyboardButton(
+                                "🎮 Games",
+                                callback_data="intro_games"
+                            ),
+                            InlineKeyboardButton(
+                                "⚙ Features",
+                                callback_data="intro_features"
+                            )
+                        ],
+                        [
+                            InlineKeyboardButton(
+                                "🔥 Ruhi Supreme",
+                                callback_data="intro_home"
+                            )
+                        ]
+                    ]
+                )
+            )
 
+        if cmd == "xoxo":
+            return await message.reply(
+                "🎮 TicTacToe coming alive: use callbacks soon 🙂"
+            )
     async def _voice_note(self, message: Message) -> None:
         if not message.from_user:
             return
