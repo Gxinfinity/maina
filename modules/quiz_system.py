@@ -62,10 +62,10 @@ from pyrogram.errors import (
     FloodWait
 )
 
-from core.app import app
+from pyrogram import Client
 
-bot = app.bot
-assistant = app.assistant
+bot = Client("quiz_placeholder")
+assistant = Client("assistant_placeholder")
 
 # =========================================================
 # CLIENTS
