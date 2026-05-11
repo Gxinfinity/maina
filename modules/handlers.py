@@ -90,7 +90,7 @@ class TelegramHandlers:
         if cmd == "lang":
             ok = self.router.tts.set_language(chat_id, args); return await message.reply("🌐 Voice set." if ok else f"Supported: {', '.join(LANGUAGE_VOICES)}")
         if cmd == "intro":
-    return await message.reply(
+            return await message.reply(
         """
 🔥 **RUHI AI SUPREME** 🔥
 
