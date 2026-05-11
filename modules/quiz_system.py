@@ -66,10 +66,7 @@ from pyrogram.errors import (
 # CLIENTS
 # =========================================================
 
-from core.clients import (
-    bot,
-    assistant
-)
+
 
 # =========================================================
 # AI / TTS / WHISPER
