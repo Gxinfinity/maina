@@ -70,27 +70,8 @@ from pyrogram.errors import (
 # MAIN BOT CLIENTS
 # =========================================================
 
-from config import (
-    API_ID,
-    API_HASH,
-    BOT_TOKEN,
-    STRING_SESSION
-)
-
-bot = Client(
-    "ruhi_quiz_bot",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN
-)
-
-assistant = Client(
-    "ruhi_quiz_assistant",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    session_string=STRING_SESSION
-) 
-
+bot = None
+assistant = None
 
 
 
@@ -8332,3 +8313,19 @@ print("""
 """)
 
 # =========================================================
+
+
+def setup_quiz_clients(
+    main_bot,
+    main_assistant
+):
+
+    global bot
+    global assistant
+
+    bot = main_bot
+    assistant = main_assistant
+
+    logger.info(
+        "✅ Quiz Clients Attached"
+    )
