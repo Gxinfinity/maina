@@ -94,6 +94,11 @@ class RuhiApplication:
 
         await self.ai.load()
 
+        setup_quiz_clients(
+            self.bot,
+            self.assistant
+        )
+
         self.handlers.register()
 
         await self.bot.start()
