@@ -7347,3 +7347,627 @@ print("""
 👑 RUHI QUIZ GOD MODE READY
 
 """)
+
+# =========================================================
+# PART 12 — ADMIN PANEL + SECURITY SYSTEM
+# NEW MODULAR STRUCTURE
+# ADD BELOW PART 11
+# modules/quiz_system.py
+# =========================================================
+
+"""
+✅ LATEST MODULAR VERSION
+
+FEATURES:
+👑 Admin Panel
+🛡 Security System
+🚫 Anti Spam
+⛔ User Ban System
+📢 Broadcast
+📊 Admin Stats
+🧹 Cache Cleaner
+⚙ Runtime Controls
+🔥 Fully Compatible
+
+✅ NO OLD GLOBAL STRUCTURE
+"""
+
+# =========================================================
+# ADMIN CACHE
+# =========================================================
+
+SUPER_ADMINS = set()
+
+BANNED_USERS = set()
+
+SPAM_TRACK = defaultdict(list)
+
+BOT_SETTINGS = {
+
+    "quiz_enabled": True,
+
+    "ai_enabled": True,
+
+    "voice_enabled": True,
+
+    "maintenance": False
+}
+
+# =========================================================
+# CHECK ADMIN
+# =========================================================
+
+async def is_admin(
+
+    bot,
+    chat_id,
+    user_id
+):
+
+    try:
+
+        member = await bot.get_chat_member(
+            chat_id,
+            user_id
+        )
+
+        return member.status in [
+
+            "administrator",
+
+            "owner"
+        ]
+
+    except:
+
+        return False
+
+# =========================================================
+# PART 12 HANDLERS
+# =========================================================
+
+def register_part12_handlers(
+
+    bot,
+    assistant,
+    ai_model
+):
+
+    # =====================================================
+    # ADMIN PANEL
+    # =====================================================
+
+    @bot.on_message(
+        filters.command(["adminpanel"])
+    )
+    async def admin_panel(
+        _,
+        m: Message
+    ):
+
+        try:
+
+            ok = await is_admin(
+
+                bot,
+
+                m.chat.id,
+
+                m.from_user.id
+            )
+
+            if not ok:
+
+                return await m.reply(
+                    "❌ Admin only."
+                )
+
+            kb = InlineKeyboardMarkup([
+
+                [
+
+                    InlineKeyboardButton(
+                        "📊 Stats",
+                        callback_data="admin_stats"
+                    ),
+
+                    InlineKeyboardButton(
+                        "🧹 Cleanup",
+                        callback_data="admin_cleanup"
+                    )
+                ],
+
+                [
+
+                    InlineKeyboardButton(
+                        "📢 Broadcast",
+                        callback_data="admin_broadcast"
+                    ),
+
+                    InlineKeyboardButton(
+                        "⚙ Settings",
+                        callback_data="admin_settings"
+                    )
+                ],
+
+                [
+
+                    InlineKeyboardButton(
+                        "🚫 Ban User",
+                        callback_data="admin_ban"
+                    ),
+
+                    InlineKeyboardButton(
+                        "✅ Unban",
+                        callback_data="admin_unban"
+                    )
+                ]
+            ])
+
+            await m.reply(
+                """
+
+👑 RUHI ADMIN PANEL
+
+🛡 Security Controls
+📊 Live Statistics
+⚙ Runtime Settings
+🔥 Advanced Management
+
+""",
+                reply_markup=kb
+            )
+
+        except Exception as e:
+
+            logger.error(
+                f"Admin Panel Error: {e}"
+            )
+
+    # =====================================================
+    # ADMIN CALLBACKS
+    # =====================================================
+
+    @bot.on_callback_query(
+        filters.regex("^admin_")
+    )
+    async def admin_callbacks(
+        _,
+        cb: CallbackQuery
+    ):
+
+        try:
+
+            data = cb.data
+
+            # =============================================
+            # STATS
+            # =============================================
+
+            if data == "admin_stats":
+
+                total_users = len(
+                    USER_XP
+                )
+
+                total_quiz = len(
+                    ACTIVE_QUIZ
+                )
+
+                total_battles = len(
+                    ACTIVE_BATTLES
+                )
+
+                mem = round(
+                    psutil.virtual_memory().percent,
+                    2
+                )
+
+                await cb.message.edit_text(
+                    f"""
+
+📊 LIVE BOT STATS
+
+👥 Users:
+{total_users}
+
+📚 Active Quiz:
+{total_quiz}
+
+⚔ Battles:
+{total_battles}
+
+🧠 RAM Usage:
+{mem}%
+
+🔥 Status:
+ONLINE
+
+"""
+                )
+
+            # =============================================
+            # CLEANUP
+            # =============================================
+
+            elif data == "admin_cleanup":
+
+                gc.collect()
+
+                await cb.answer(
+                    "🧹 Cleanup Complete"
+                )
+
+            # =============================================
+            # SETTINGS
+            # =============================================
+
+            elif data == "admin_settings":
+
+                text = f"""
+
+⚙ BOT SETTINGS
+
+📚 Quiz:
+{BOT_SETTINGS['quiz_enabled']}
+
+🧠 AI:
+{BOT_SETTINGS['ai_enabled']}
+
+🎤 Voice:
+{BOT_SETTINGS['voice_enabled']}
+
+🛠 Maintenance:
+{BOT_SETTINGS['maintenance']}
+
+"""
+
+                await cb.message.edit_text(
+                    text
+                )
+
+            # =============================================
+            # BAN
+            # =============================================
+
+            elif data == "admin_ban":
+
+                await cb.answer(
+                    "Reply + /ban userid"
+                )
+
+            # =============================================
+            # UNBAN
+            # =============================================
+
+            elif data == "admin_unban":
+
+                await cb.answer(
+                    "Use /unban userid"
+                )
+
+        except Exception as e:
+
+            logger.error(
+                f"Admin Callback Error: {e}"
+            )
+
+    # =====================================================
+    # BAN USER
+    # =====================================================
+
+    @bot.on_message(
+        filters.command(["ban"])
+    )
+    async def ban_user(
+        _,
+        m: Message
+    ):
+
+        try:
+
+            ok = await is_admin(
+
+                bot,
+
+                m.chat.id,
+
+                m.from_user.id
+            )
+
+            if not ok:
+
+                return
+
+            if len(m.command) < 2:
+
+                return await m.reply(
+                    "Usage:\n/ban user_id"
+                )
+
+            user_id = int(
+                m.command[1]
+            )
+
+            BANNED_USERS.add(
+                user_id
+            )
+
+            await m.reply(
+                f"🚫 Banned: {user_id}"
+            )
+
+        except Exception as e:
+
+            logger.error(
+                f"Ban Error: {e}"
+            )
+
+    # =====================================================
+    # UNBAN USER
+    # =====================================================
+
+    @bot.on_message(
+        filters.command(["unban"])
+    )
+    async def unban_user(
+        _,
+        m: Message
+    ):
+
+        try:
+
+            ok = await is_admin(
+
+                bot,
+
+                m.chat.id,
+
+                m.from_user.id
+            )
+
+            if not ok:
+
+                return
+
+            if len(m.command) < 2:
+
+                return await m.reply(
+                    "Usage:\n/unban user_id"
+                )
+
+            user_id = int(
+                m.command[1]
+            )
+
+            BANNED_USERS.discard(
+                user_id
+            )
+
+            await m.reply(
+                f"✅ Unbanned: {user_id}"
+            )
+
+        except Exception as e:
+
+            logger.error(
+                f"Unban Error: {e}"
+            )
+
+    # =====================================================
+    # BROADCAST
+    # =====================================================
+
+    @bot.on_message(
+        filters.command(["broadcast"])
+    )
+    async def broadcast(
+        _,
+        m: Message
+    ):
+
+        try:
+
+            ok = await is_admin(
+
+                bot,
+
+                m.chat.id,
+
+                m.from_user.id
+            )
+
+            if not ok:
+
+                return
+
+            text = " ".join(
+                m.command[1:]
+            )
+
+            if not text:
+
+                return await m.reply(
+                    "Usage:\n/broadcast hello"
+                )
+
+            sent = 0
+
+            failed = 0
+
+            for user_id in USER_XP.keys():
+
+                try:
+
+                    await bot.send_message(
+                        user_id,
+                        f"📢 {text}"
+                    )
+
+                    sent += 1
+
+                except:
+
+                    failed += 1
+
+            await m.reply(
+                f"""
+
+📢 BROADCAST COMPLETE
+
+✅ Sent:
+{sent}
+
+❌ Failed:
+{failed}
+
+"""
+            )
+
+        except Exception as e:
+
+            logger.error(
+                f"Broadcast Error: {e}"
+            )
+
+    # =====================================================
+    # MAINTENANCE
+    # =====================================================
+
+    @bot.on_message(
+        filters.command(["maintenance"])
+    )
+    async def maintenance(
+        _,
+        m: Message
+    ):
+
+        try:
+
+            ok = await is_admin(
+
+                bot,
+
+                m.chat.id,
+
+                m.from_user.id
+            )
+
+            if not ok:
+
+                return
+
+            BOT_SETTINGS[
+                "maintenance"
+            ] = not BOT_SETTINGS[
+                "maintenance"
+            ]
+
+            state = (
+                "ON"
+                if BOT_SETTINGS[
+                    "maintenance"
+                ]
+                else "OFF"
+            )
+
+            await m.reply(
+                f"🛠 Maintenance: {state}"
+            )
+
+        except Exception as e:
+
+            logger.error(
+                f"Maintenance Error: {e}"
+            )
+
+# =========================================================
+# SECURITY FILTER
+# =========================================================
+
+async def security_filter(
+    message: Message
+):
+
+    try:
+
+        user_id = (
+            message.from_user.id
+        )
+
+        # =============================================
+        # BANNED
+        # =============================================
+
+        if user_id in BANNED_USERS:
+
+            return False
+
+        # =============================================
+        # MAINTENANCE
+        # =============================================
+
+        if BOT_SETTINGS[
+            "maintenance"
+        ]:
+
+            return False
+
+        # =============================================
+        # SPAM CHECK
+        # =============================================
+
+        now = time.time()
+
+        SPAM_TRACK[user_id] = [
+
+            x for x in
+            SPAM_TRACK[user_id]
+
+            if now - x < 10
+        ]
+
+        SPAM_TRACK[user_id].append(
+            now
+        )
+
+        if len(
+            SPAM_TRACK[user_id]
+        ) > 8:
+
+            return False
+
+        return True
+
+    except:
+
+        return True
+
+# =========================================================
+# START PART 12 SERVICES
+# =========================================================
+
+async def start_part12_services():
+
+    logger.info(
+        "👑 PART 12 SERVICES STARTED"
+    )
+
+# =========================================================
+# FINAL LOADED
+# =========================================================
+
+print("""
+
+✅ PART 12 LOADED
+
+👑 Admin Panel
+🛡 Security System
+🚫 Anti Spam
+📢 Broadcast
+⚙ Runtime Settings
+🧹 Cleanup Engine
+🔥 Full Protection
+
+""")
+
