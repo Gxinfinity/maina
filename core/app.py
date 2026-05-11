@@ -14,10 +14,7 @@ from core.config import Settings
 from core.logging import setup_logging
 from database.repository import Repository
 from modules.handlers import TelegramHandlers
-
-from modules.quiz_system import (
-quiz_main_loader
-)
+from modules.quiz_system import quiz_main_loader
 
 from music.player import MusicPlayer
 from services.ai_service import AIService
