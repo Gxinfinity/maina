@@ -126,9 +126,7 @@ openrouter_client = AsyncOpenAI(
     base_url="https://openrouter.ai/api/v1"
 )
 
-OPENROUTER_MODEL = (
-    "deepseek/deepseek-chat-v3-0324:free"
-)
+OPENROUTER_MODEL = "openai/gpt-3.5-turbo"
 
 # =========================================================
 # GEMINI BACKUP
@@ -146,7 +144,7 @@ if GEMINI_API_KEY:
     )
 
     ai_model = genai.GenerativeModel(
-        "gemini-1.5-flash-8b"
+        "openai/gpt-3.5-turbo-8b"
     )
 
 else:
@@ -676,11 +674,13 @@ async def generate_question(
 ):
 
     prompt = f"""
+Generate ONE UNIQUE MCQ ONLY from subject: {subject}
 
-Generate one MCQ for {subject}
-
-Format:
-
+STRICT RULES:
+- Only from {subject}
+- No mixed questions
+- Never repeat previous questions
+- Return ONLY:
 Question|OptionA|OptionB|OptionC|OptionD|CorrectLetter
 """
 
@@ -699,14 +699,19 @@ Question|OptionA|OptionB|OptionC|OptionD|CorrectLetter
                 "correct": "A"
             }
 
-        res = await asyncio.to_thread(
-            ai_model.generate_content,
-            prompt
+        response = await openrouter_client.chat.completions.create(
+            model=OPENROUTER_MODEL,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
         )
 
-        text = res.text.strip()
+        text = response.choices[0].message.content.strip()
 
-        parts = text.split("|")
+        parts = [x.strip() for x in text.replace("\n","|").split("|") if x.strip()]
 
         if len(parts) < 6:
 
@@ -714,11 +719,11 @@ Question|OptionA|OptionB|OptionC|OptionD|CorrectLetter
 
         return {
 
-            "question": parts[0],
+            "question": parts[0].replace("Question:", "").strip(),
 
             "options": parts[1:5],
 
-            "correct": parts[5].strip().upper()
+            "correct": parts[5].strip().upper()[0]
         }
 
     except Exception as e:
@@ -774,7 +779,7 @@ async def run_quiz(
 
                 is_anonymous=False,
 
-                open_period=30
+                open_period=5
             )
 
             POLL_CACHE[poll.poll.id] = {
@@ -786,7 +791,7 @@ async def run_quiz(
 
             data["index"] += 1
 
-            await asyncio.sleep(35)
+            await asyncio.sleep(5)
 
         await finish_quiz(
             bot,
@@ -1374,7 +1379,7 @@ def register_advanced_quiz_handlers(
 
         ACTIVE_QUIZ[chat_id] = {
 
-            "subject": "Mixed",
+            "subject": subject,
 
             "total": 20,
 
@@ -2006,7 +2011,7 @@ async def speed_quiz(_, m):
 
     ACTIVE_QUIZ[chat_id] = {
 
-        "subject": "Mixed",
+        "subject": subject,
         "total": 25,
         "correct": 0,
         "wrong": 0,
@@ -2170,7 +2175,7 @@ async def auto_quiz_drop(
 
         try:
 
-            await asyncio.sleep(3600)
+            await asyncio.sleep(5)
 
             for chat_id in GROUP_QUIZ:
 
@@ -2203,7 +2208,7 @@ async def auto_quiz_drop(
 
                     is_anonymous=False,
 
-                    open_period=60
+                    open_period=5
                 )
 
         except Exception as e:
@@ -2498,7 +2503,7 @@ def register_pro_quiz_handlers(
 
                 is_anonymous=False,
 
-                open_period=20
+                open_period=5
             )
 
             POLL_CACHE[poll.poll.id] = {
@@ -2508,7 +2513,7 @@ def register_pro_quiz_handlers(
                 "correct": q["correct"]
             }
 
-            await asyncio.sleep(25)
+            await asyncio.sleep(5)
 
         s1 = duel["score1"]
 
@@ -2679,10 +2684,10 @@ def register_pro_quiz_handlers(
 
                 is_anonymous=False,
 
-                open_period=30
+                open_period=5
             )
 
-            await asyncio.sleep(35)
+            await asyncio.sleep(5)
 
     # =====================================================
     # STUDY TIP
@@ -3446,7 +3451,7 @@ Easy explanation.
 
         ACTIVE_QUIZ[chat_id] = {
 
-            "subject": "Mixed",
+            "subject": subject,
 
             "total": 50,
 
@@ -3746,7 +3751,7 @@ async def auto_cleanup():
 
         try:
 
-            await asyncio.sleep(3600)
+            await asyncio.sleep(5)
 
             removed = 0
 
@@ -3804,7 +3809,7 @@ async def autosave_loop():
 
         try:
 
-            await asyncio.sleep(300)
+            await asyncio.sleep(5)
 
             for chat_id in CHAT_MEMORY.keys():
 
@@ -3854,7 +3859,7 @@ async def motivation_broadcast(
 
         try:
 
-            await asyncio.sleep(21600)
+            await asyncio.sleep(5)
 
             for chat_id in ACTIVE_CALLS:
 
@@ -4243,7 +4248,7 @@ async def generate_daily_challenge():
 
         try:
 
-            await asyncio.sleep(86400)
+            await asyncio.sleep(5)
 
             DAILY_CHALLENGE.clear()
 
@@ -6371,14 +6376,9 @@ print("""
 # =========================================================
 
 QUIZ_MODES = {
-
-    "poll": "📊 Poll Quiz",
-
-    "mcq": "🧠 Inline MCQ",
-
-    "voice": "🎤 Voice Quiz",
-
-    "rapid": "⚡ Rapid Fire"
+    10: 10,
+    60: 60,
+    120: 120
 }
 
 # =========================================================
@@ -7159,7 +7159,7 @@ async def memory_optimizer():
 
         try:
 
-            await asyncio.sleep(300)
+            await asyncio.sleep(5)
 
             gc.collect()
 
@@ -7187,7 +7187,7 @@ async def anti_crash_system(
 
         try:
 
-            await asyncio.sleep(60)
+            await asyncio.sleep(5)
 
             # BOT CHECK
 
