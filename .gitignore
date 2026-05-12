@@ -10,3 +10,4 @@ pycache/
 *.session
 *.session-journal
 log.txt
+.env
