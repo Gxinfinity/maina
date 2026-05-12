@@ -371,6 +371,18 @@ class TelegramHandlers:
         # INTRO
         # =================================================
 
+        if cmd == "neetquiz":
+            return await message.reply("🧪 NEET Quiz Started!")
+
+        if cmd == "jeequiz":
+            return await message.reply("📘 JEE Quiz Started!")
+
+        if cmd == "gkquiz":
+            return await message.reply("🌍 GK Quiz Started!")
+
+        if cmd == "pharmacyquiz":
+            return await message.reply("💊 Pharmacy Quiz Started!")
+
         if cmd == "intro":
 
             return await message.reply(

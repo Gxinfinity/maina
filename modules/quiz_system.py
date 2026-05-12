@@ -5500,7 +5500,7 @@ Question|A|B|C|D|CorrectLetter|Short Explanation
 
         question = data[0]
 
-        options = data[1:5]
+        options = data[1:5][:4]
 
         correct = data[5].strip().upper()
 
@@ -5512,7 +5512,7 @@ Question|A|B|C|D|CorrectLetter|Short Explanation
 
         kb = []
 
-        for i, opt in enumerate(options):
+        for i, opt in enumerate(options[:4]):
 
             letter = chr(65 + i)
 

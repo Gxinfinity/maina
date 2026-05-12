@@ -1,28 +1,23 @@
 from __future__ import annotations
-
 import asyncio
 import logging
 import signal
 from contextlib import suppress
-
 import psutil
 from pyrogram import Client, idle
 from pytgcalls import PyTgCalls
-
 from ai.intent import IntentRouter
 from core.config import Settings
 from core.logging import setup_logging
 from database.repository import Repository
 from modules.handlers import TelegramHandlers
 from modules.quiz_system import quiz_main_loader
-
 from music.player import MusicPlayer
 from services.ai_service import AIService
 from services.search_service import SearchService
 from services.tts_service import TTSService
 from services.weather_service import WeatherService
 from voice.assistant import VoiceAssistant
-
 log = logging.getLogger("ruhi.app")
 
 
@@ -105,6 +100,8 @@ class RuhiApplication:
         )
 
         self.handlers.register()
+        from modules.quiz_system import register_quiz_handlers
+        register_quiz_handlers(self.bot, self.ai.model)
 
         await self.bot.start()
 

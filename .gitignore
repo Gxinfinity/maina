@@ -11,3 +11,11 @@ pycache/
 *.session-journal
 log.txt
 .env
+.env
+*.session
+*.session-journal
+__pycache__/
+*.pyc
+venv/
+downloads/
+quiz_backups/
