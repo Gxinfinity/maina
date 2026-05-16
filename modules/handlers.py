@@ -1,3 +1,7 @@
+# =========================================================
+# KEEP ONLY THIS AT TOP OF FILE
+# =========================================================
+
 from __future__ import annotations
 
 import random
@@ -23,25 +27,14 @@ from kurigram.types import InlineKeyboardButton
 
 from ai.intent import IntentRouter
 from services.tts_service import LANGUAGE_VOICES
- =========================================================
-# START + INTRO UI UPGRADE
-# ADD THIS INSIDE _command()
-# OLD CODE REMOVE MAT KARNA
-# SIRF REPLACE KARNA:
-#
+
+
+# =========================================================
+# START BLOCK
+# REPLACE ONLY OLD:
 # if cmd == "start":
-# if cmd == "intro":
-#
+# BLOCK INSIDE _command()
 # =========================================================
-
-
-# =========================================================
-# START
-# =========================================================
-
-# =====================================================
-# REPLACE OLD START BLOCK INSIDE _command()
-# =====================================================
 
 if cmd == "start":
 
@@ -113,14 +106,19 @@ if cmd == "start":
         caption=START_TEXT,
         reply_markup=START_BUTTONS
     )
-# =====================================================
-# REPLACE OLD INTRO BLOCK INSIDE _command()
-# =====================================================
+
+
+# =========================================================
+# INTRO BLOCK
+# REPLACE ONLY OLD:
+# if cmd == "intro":
+# BLOCK INSIDE _command()
+# =========================================================
 
 if cmd == "intro":
 
     INTRO_TEXT = """
-🔥 **RUHI AI SUPREME** 🔥
+🔥 **𝗥𝗨𝗛𝗜 𝗔𝗜 𝗦𝗨𝗣𝗥𝗘𝗠𝗘** 🔥
 
 🧠 AI Assistant
 📚 Quiz System
@@ -195,35 +193,40 @@ if cmd == "intro":
         [
             [
                 InlineKeyboardButton(
-                    "📚 Quiz Hub",
-                    callback_data="intro_quiz"
+                    text="📚 Quiz Hub",
+                    callback_data="intro_quiz",
+                    style=ButtonStyle.SUCCESS
                 ),
                 InlineKeyboardButton(
-                    "🧠 AI",
-                    callback_data="intro_ai"
+                    text="🧠 AI",
+                    callback_data="intro_ai",
+                    style=ButtonStyle.PRIMARY
                 )
             ],
             [
                 InlineKeyboardButton(
-                    "🎮 Games",
-                    callback_data="intro_games"
+                    text="🎮 Games",
+                    callback_data="intro_games",
+                    style=ButtonStyle.SECONDARY
                 ),
                 InlineKeyboardButton(
-                    "🎵 Music",
-                    callback_data="intro_music"
+                    text="🎵 Music",
+                    callback_data="intro_music",
+                    style=ButtonStyle.DANGER
                 )
             ],
             [
                 InlineKeyboardButton(
-                    "⚡ Features",
-                    callback_data="intro_features"
+                    text="⚡ Features",
+                    callback_data="intro_features",
+                    style=ButtonStyle.PRIMARY
                 )
             ]
         ]
     )
 
     return await message.reply_photo(
-        photo="https://files.catbox.moe/8m0m9w.jpg",
+        photo="https://graph.org/file/2f8e61c55d311070339c8-17b572b5c7c8ad0907.jpg",
         caption=INTRO_TEXT,
         reply_markup=INTRO_BUTTONS
     )
@@ -392,47 +395,64 @@ async def callbacks(_, callback: CallbackQuery):
 
     elif callback.data == "intro_back":
 
-        return await callback.message.edit_caption(
-            caption="""
-✨ **Ruhi Supreme AI Online Hai!**
+    return await callback.message.edit_caption(
+        caption="""
+✨ **𝗥𝘂𝗵𝗶 𝗦𝘂𝗽𝗿𝗲𝗺𝗲 𝗔𝗜 💫**
 
-🧠 AI + 📚 Quiz + 🎮 Games + 🎵 Music
+╭━━━━━━━━━━━━━━━╮
+┃ 🧠 𝗦𝗺𝗮𝗿𝘁 𝗔𝗜 𝗔𝘀𝘀𝗶𝘀𝘁𝗮𝗻𝘁
+┃ 📚 𝗔𝗱𝘃𝗮𝗻𝗰𝗲𝗱 𝗤𝘂𝗶𝘇 𝗦𝘆𝘀𝘁𝗲𝗺
+┃ 🎮 𝗙𝘂𝗻 & 𝗠𝘂𝗹𝘁𝗶𝗽𝗹𝗮𝘆𝗲𝗿 𝗚𝗮𝗺𝗲𝘀
+┃ 🎵 𝟮𝟰×𝟳 𝗩𝗖 𝗠𝘂𝘀𝗶𝗰
+┃ 🌦 𝗟𝗶𝘃𝗲 𝗪𝗲𝗮𝘁𝗵𝗲𝗿
+┃ 🎤 𝗩𝗼𝗶𝗰𝗲 𝗔𝗜 𝗦𝘂𝗽𝗽𝗼𝗿𝘁
+╰━━━━━━━━━━━━━━━╯
 
-🔥 Use Buttons Below
+⚡ 𝗙𝗮𝘀𝘁 • 𝗦𝗺𝗮𝗿𝘁 • 𝗣𝗼𝘄𝗲𝗿𝗳𝘂𝗹
+🔥 𝗧𝗵𝗲 𝗨𝗹𝘁𝗶𝗺𝗮𝘁𝗲 𝗧𝗲𝗹𝗲𝗴𝗿𝗮𝗺 𝗔𝗜 𝗘𝘅𝗽𝗲𝗿𝗶𝗲𝗻𝗰𝗲
+
+━━━━━━━━━━━━━━━━━━
+💡 𝗦𝗲𝗹𝗲𝗰𝘁 𝗔 𝗙𝗲𝗮𝘁𝘂𝗿𝗲 𝗕𝗲𝗹𝗼𝘄
+━━━━━━━━━━━━━━━━━━
 """,
-            reply_markup=InlineKeyboardMarkup(
+        reply_markup=InlineKeyboardMarkup(
+            [
                 [
-                    [
-                        InlineKeyboardButton(
-                            "🧠 AI",
-                            callback_data="intro_ai"
-                        ),
-                        InlineKeyboardButton(
-                            "📚 Quiz",
-                            callback_data="intro_quiz"
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            "🎵 Music",
-                            callback_data="intro_music"
-                        ),
-                        InlineKeyboardButton(
-                            "🎮 Games",
-                            callback_data="intro_games"
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            "⚡ Features",
-                            callback_data="intro_features"
-                        )
-                    ]
+                    InlineKeyboardButton(
+                        text="🧠 𝗔𝗜",
+                        callback_data="intro_ai",
+                        style=ButtonStyle.PRIMARY
+                    ),
+                    InlineKeyboardButton(
+                        text="📚 𝗤𝘂𝗶𝘇",
+                        callback_data="intro_quiz",
+                        style=ButtonStyle.SUCCESS
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="🎵 𝗠𝘂𝘀𝗶𝗰",
+                        callback_data="intro_music",
+                        style=ButtonStyle.DANGER
+                    ),
+                    InlineKeyboardButton(
+                        text="🎮 𝗚𝗮𝗺𝗲𝘀",
+                        callback_data="intro_games",
+                        style=ButtonStyle.SECONDARY
+                    )
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="⚡ 𝗙𝗲𝗮𝘁𝘂𝗿𝗲𝘀",
+                        callback_data="intro_features",
+                        style=ButtonStyle.PRIMARY
+                    )
                 ]
-            )
+            ]
         )
-
-    await callback.answer(
-        "🔥 Feature Active",
-        show_alert=False
     )
+
+await callback.answer(
+    "🔥 Feature Active",
+    show_alert=False
+)
