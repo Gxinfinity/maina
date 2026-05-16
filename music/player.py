@@ -91,7 +91,7 @@ class MusicPlayer:
             ydl_opts = {
                 "quiet": True,
                 "cookiefile": "/root/cookies/youtube.txt",
-                "format": "140/bestaudio/best",
+                "format": "140/bestaudio[ext=m4a]/best",
                 "geo_bypass": True,
                 "nocheckcertificate": True,
                 "noplaylist": True,
